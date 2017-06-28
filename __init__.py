@@ -36,10 +36,19 @@ class AutoguiSkill(MycroftSkill):
             require("TypeKeyword").require("Text").build()
         self.register_intent(type_intent, self.handle_type_intent)
 
+        press_enter_intent = IntentBuilder("PressEnterIntent"). \
+            require("PressEnterKeyword").build()
+        self.register_intent(press_enter_intent, self.handle_press_enter_intent)
+
     def handle_type_intent(self, message):
 	self.speak_dialog("typing")
 	text = message.data.get('Text')
         pyautogui.typewrite(text, interval=0.05)
+
+    def handle_press_enter_intent(self, message):
+	self.speak('pressing enter')
+        pyautogui.press('enter')
+
 
     def stop(self):
         pass
