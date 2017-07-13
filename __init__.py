@@ -21,6 +21,7 @@ from mycroft.skills.core import MycroftSkill
 from mycroft.util.log import getLogger
 
 import pyautogui
+import platform
 
 __author__ = 'eClarity'
 
@@ -40,6 +41,22 @@ class AutoguiSkill(MycroftSkill):
             require("PressEnterKeyword").build()
         self.register_intent(press_enter_intent, self.handle_press_enter_intent)
 
+        mouse_absolute_intent = IntentBuilder("MouseAbsoluteIntent"). \
+            require("MouseAbsoluteKeyword").require("X").require("Y").build()
+        self.register_intent(mouse_absolute_intent, self.handle_mouse_absolute_intent)
+
+        mouse_scroll_down_intent = IntentBuilder("MouseScrollDownIntent"). \
+            require("MouseScrollDownKeyword").require("Scroll").build()
+        self.register_intent(mouse_scroll_down_intent, self.handle_mouse_scroll_down_intent)
+
+        mouse_scroll_up_intent = IntentBuilder("MouseScrollUpIntent"). \
+            require("MouseScrollUpKeyword").require("Scroll").build()
+        self.register_intent(mouse_scroll_up_intent, self.handle_mouse_scroll_up_intent)
+
+        mouse_scroll_right_intent = IntentBuilder("MouseScrollRightIntent"). \
+            require("MouseScrollRightKeyword").require("Scroll").build()
+        self.register_intent(mouse_scroll_right_intent, self.handle_mouse_scroll_right_intent)
+
     def handle_type_intent(self, message):
 	self.speak_dialog("typing")
 	text = message.data.get('Text')
@@ -47,6 +64,41 @@ class AutoguiSkill(MycroftSkill):
 
     def handle_press_enter_intent(self, message):
 	self.speak('pressing enter')
+        pyautogui.press('enter')
+
+    def handle_mouse_absolute_intent(self, message):
+	self.speak('moving mouse now')
+	#X = message.data.get('X')
+	#Y = message.data.get('Y')
+        #pyautogui.moveTo(X, Y)
+
+    def handle_mouse_scroll_down_intent(self, message):
+        self.speak('scrolling down now')
+        scroll = message.data.get('Scroll')
+        scroll_down = int(scroll) * -1
+	pyautogui.scroll(scroll_down)
+
+    def handle_mouse_scroll_up_intent(self, message):
+        self.speak('scrolling up now')
+        scroll = message.data.get('Scroll')
+        scroll_up = int(scroll)
+	pyautogui.scroll(scroll_up)
+
+    def handle_mouse_scroll_right_intent(self, message):
+        if platform.system().lower().startswith('lin'):
+            self.speak('scrolling right now')
+            scroll = message.data.get('Scroll')
+            scroll_right = int(scroll)
+	    pyautogui.hscroll(scroll_right)
+        else:
+            self.speak('Sorry, I cannot scroll right on your current operating system')
+
+    def stop(self):
+        pass
+
+
+def create_skill():
+    return AutoguiSkill()
         pyautogui.press('enter')
 
 
