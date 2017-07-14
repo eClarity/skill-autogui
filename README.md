@@ -13,10 +13,7 @@ A Mycroft AI skill to enable keyboard and mouse manipulation via voice command u
 
 none
 
-## Known Issues:
+## Todo:
 
 Mouse manipulation code is currently incomplete and not functional - WIP
-
-## Known Issues:
-
 Implement more keyboard command and hotkey intents.
