@@ -22,6 +22,7 @@ from mycroft.util.log import getLogger
 
 import pyautogui
 import platform
+from num2words import num2words
 
 __author__ = 'eClarity'
 
@@ -36,10 +37,6 @@ class AutoguiSkill(MycroftSkill):
         type_intent = IntentBuilder("TypeIntent"). \
             require("TypeKeyword").require("Text").build()
         self.register_intent(type_intent, self.handle_type_intent)
-
-        press_enter_intent = IntentBuilder("PressEnterIntent"). \
-            require("PressEnterKeyword").build()
-        self.register_intent(press_enter_intent, self.handle_press_enter_intent)
 
         mouse_absolute_intent = IntentBuilder("MouseAbsoluteIntent"). \
             require("MouseAbsoluteKeyword").require("X").require("Y").build()
@@ -57,14 +54,26 @@ class AutoguiSkill(MycroftSkill):
             require("MouseScrollRightKeyword").require("Scroll").build()
         self.register_intent(mouse_scroll_right_intent, self.handle_mouse_scroll_right_intent)
 
+        screen_res_intent = IntentBuilder("ScreenResIntent"). \
+            require("ScreenResKeyword").build()
+        self.register_intent(screen_res_intent, self.handle_screen_res_intent)
+
+        press_key_intent = IntentBuilder("PressKeyIntent"). \
+            require("PressKeyKeyword").require("Key").build()
+        self.register_intent(press_key_intent, self.handle_press_key_intent)
+
+        hold_key_intent = IntentBuilder("HoldKeyIntent"). \
+            require("HoldKeyKeyword").require("Key").build()
+        self.register_intent(hold_key_intent, self.handle_hold_key_intent)
+
+        release_key_intent = IntentBuilder("ReleaseKeyIntent"). \
+            require("ReleaseKeyKeyword").require("Key").build()
+        self.register_intent(release_key_intent, self.handle_release_key_intent)
+
     def handle_type_intent(self, message):
 	self.speak_dialog("typing")
 	text = message.data.get('Text')
         pyautogui.typewrite(text, interval=0.05)
-
-    def handle_press_enter_intent(self, message):
-	self.speak('pressing enter')
-        pyautogui.press('enter')
 
     def handle_mouse_absolute_intent(self, message):
 	self.speak('moving mouse now')
@@ -93,14 +102,29 @@ class AutoguiSkill(MycroftSkill):
         else:
             self.speak('Sorry, I cannot scroll right on your current operating system')
 
-    def stop(self):
-        pass
+    def handle_screen_res_intent(self, message):
+        screen = pyautogui.size()
+        resx = screen[0]
+        resy = screen[1]
+        responsex = num2words(resx)
+        responsey = num2words(resy)
+        self.speak("Your screen resolution is %s by %s" % (responsex, responsey))
 
+    def handle_press_key_intent(self, message):
+        key = message.data.get('Key')
+        self.speak("Pressing %s" % key)
+        pyautogui.keyDown(key)
+        pyautogui.keyUp(key)
 
-def create_skill():
-    return AutoguiSkill()
-        pyautogui.press('enter')
+    def handle_hold_key_intent(self, message):
+        key = message.data.get('Key')
+        self.speak("Holding down %s key" % key)
+        pyautogui.keyDown(key)
 
+    def handle_release_key_intent(self, message):
+        key = message.data.get('Key')
+        self.speak("Releasing %s key" % key)
+        pyautogui.keyUp(key)
 
     def stop(self):
         pass
