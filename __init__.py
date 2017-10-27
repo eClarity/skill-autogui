@@ -70,6 +70,14 @@ class AutoguiSkill(MycroftSkill):
             require("ReleaseKeyKeyword").require("Key").build()
         self.register_intent(release_key_intent, self.handle_release_key_intent)
 
+        select_all_intent = IntentBuilder("SelectAllIntent"). \
+            require("SelectAllKeyword").build()
+        self.register_intent(select_all_intent, self.handle_select_all_intent)
+
+        select_all_delete_intent = IntentBuilder("SelectAllDeleteIntent"). \
+            require("SelectAllDeleteKeyword").build()
+        self.register_intent(select_all_delete_intent, self.handle_select_all_delete_intent)
+
     def handle_type_intent(self, message):
 	self.speak_dialog("typing")
 	text = message.data.get('Text')
@@ -125,6 +133,16 @@ class AutoguiSkill(MycroftSkill):
         key = message.data.get('Key')
         self.speak("Releasing %s key" % key)
         pyautogui.keyUp(key)
+
+    def handle_select_all_intent(self, message):
+        self.speak("Selecting all")
+        pyautogui.hotkey("ctrl", "a")
+
+    def handle_select_all_delete_intent(self, message):
+        self.speak("Deleting all")
+        pyautogui.hotkey("ctrl", "a")
+        pyautogui.keyDown('del')
+        pyautogui.keyUp('del')
 
     def stop(self):
         pass
