@@ -74,9 +74,17 @@ class AutoguiSkill(MycroftSkill):
             require("SelectAllKeyword").build()
         self.register_intent(select_all_intent, self.handle_select_all_intent)
 
-        select_all_delete_intent = IntentBuilder("SelectAllDeleteIntent"). \
-            require("SelectAllDeleteKeyword").build()
-        self.register_intent(select_all_delete_intent, self.handle_select_all_delete_intent)
+        copy_intent = IntentBuilder("CopyIntent"). \
+            require("CopyKeyword").build()
+        self.register_intent(copy_intent, self.handle_copy_intent)
+
+        cut_intent = IntentBuilder("CutIntent"). \
+            require("CutKeyword").build()
+        self.register_intent(cut_intent, self.handle_cut_intent)
+
+        paste_intent = IntentBuilder("PasteIntent"). \
+            require("PasteKeyword").build()
+        self.register_intent(paste_intent, self.handle_paste_intent)
 
     def handle_type_intent(self, message):
 	self.speak_dialog("typing")
@@ -138,11 +146,17 @@ class AutoguiSkill(MycroftSkill):
         self.speak("Selecting all")
         pyautogui.hotkey("ctrl", "a")
 
-    def handle_select_all_delete_intent(self, message):
-        self.speak("Deleting all")
-        pyautogui.hotkey("ctrl", "a")
-        pyautogui.keyDown('del')
-        pyautogui.keyUp('del')
+    def handle_copy_intent(self, message):
+        pyautogui.hotkey("ctrl", "c")
+        self.speak("Okay Copied!")
+
+    def handle_cut_intent(self, message):
+        self.speak("Cutting to clipboard")
+        pyautogui.hotkey("ctrl", "x")
+
+    def handle_paste_intent(self, message):
+        self.speak("Pasting from clipboard")
+        pyautogui.hotkey("ctrl", "v")
 
     def stop(self):
         pass
