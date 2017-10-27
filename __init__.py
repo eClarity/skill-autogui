@@ -70,9 +70,13 @@ class AutoguiSkill(MycroftSkill):
             require("ReleaseKeyKeyword").require("Key").build()
         self.register_intent(release_key_intent, self.handle_release_key_intent)
 
-        select_all_intent = IntentBuilder("SelectAllIntent"). \
-            require("SelectAllKeyword").build()
-        self.register_intent(select_all_intent, self.handle_select_all_intent)
+        select_combination_intent = IntentBuilder("SelectCombinationIntent"). \
+            require("SelectAllKeyword").optionally("CopyKeyword"). \
+                                        optionally("CutKeyword"). \
+                                        optionally("PasteKeyword").\
+                                        optionally("DeleteKeyword").build()
+        self.register_intent(select_combination_intent, self.handle_select_combination_intent)
+
 
         copy_intent = IntentBuilder("CopyIntent"). \
             require("CopyKeyword").build()
@@ -142,10 +146,6 @@ class AutoguiSkill(MycroftSkill):
         self.speak("Releasing %s key" % key)
         pyautogui.keyUp(key)
 
-    def handle_select_all_intent(self, message):
-        self.speak("Selecting all")
-        pyautogui.hotkey("ctrl", "a")
-
     def handle_copy_intent(self, message):
         pyautogui.hotkey("ctrl", "c")
         self.speak("Okay Copied!")
@@ -157,6 +157,21 @@ class AutoguiSkill(MycroftSkill):
     def handle_paste_intent(self, message):
         self.speak("Pasting from clipboard")
         pyautogui.hotkey("ctrl", "v")
+
+    def handle_select_combination_intent(self, message):
+        self.speak("Selecting all")
+        pyautogui.hotkey("ctrl", "a")
+        if message.data.get("PasteKeyword"):
+            self.handle_paste_intent(message)
+        elif message.data.get("CopyKeyword"):
+            self.handle_copy_intent(message)
+        elif message.data.get("CutKeyword"):
+            self.handle_cut_intent(message)
+        elif message.data.get("DeleteKeyword"):
+            self.speak("deleting")
+            pyautogui.keyDown("delete")
+            pyautogui.keyUp("delete")
+            
 
     def stop(self):
         pass
