@@ -70,6 +70,26 @@ class AutoguiSkill(MycroftSkill):
             require("ReleaseKeyKeyword").require("Key").build()
         self.register_intent(release_key_intent, self.handle_release_key_intent)
 
+        select_combination_intent = IntentBuilder("SelectCombinationIntent"). \
+            require("SelectAllKeyword").optionally("CopyKeyword"). \
+                                        optionally("CutKeyword"). \
+                                        optionally("PasteKeyword").\
+                                        optionally("DeleteKeyword").build()
+        self.register_intent(select_combination_intent, self.handle_select_combination_intent)
+
+
+        copy_intent = IntentBuilder("CopyIntent"). \
+            require("CopyKeyword").build()
+        self.register_intent(copy_intent, self.handle_copy_intent)
+
+        cut_intent = IntentBuilder("CutIntent"). \
+            require("CutKeyword").build()
+        self.register_intent(cut_intent, self.handle_cut_intent)
+
+        paste_intent = IntentBuilder("PasteIntent"). \
+            require("PasteKeyword").build()
+        self.register_intent(paste_intent, self.handle_paste_intent)
+
     def handle_type_intent(self, message):
 	self.speak_dialog("typing")
 	text = message.data.get('Text')
@@ -125,6 +145,33 @@ class AutoguiSkill(MycroftSkill):
         key = message.data.get('Key')
         self.speak("Releasing %s key" % key)
         pyautogui.keyUp(key)
+
+    def handle_copy_intent(self, message):
+        pyautogui.hotkey("ctrl", "c")
+        self.speak("Okay Copied!")
+
+    def handle_cut_intent(self, message):
+        self.speak("Cutting to clipboard")
+        pyautogui.hotkey("ctrl", "x")
+
+    def handle_paste_intent(self, message):
+        self.speak("Pasting from clipboard")
+        pyautogui.hotkey("ctrl", "v")
+
+    def handle_select_combination_intent(self, message):
+        self.speak("Selecting all")
+        pyautogui.hotkey("ctrl", "a")
+        if message.data.get("PasteKeyword"):
+            self.handle_paste_intent(message)
+        elif message.data.get("CopyKeyword"):
+            self.handle_copy_intent(message)
+        elif message.data.get("CutKeyword"):
+            self.handle_cut_intent(message)
+        elif message.data.get("DeleteKeyword"):
+            self.speak("deleting")
+            pyautogui.keyDown("delete")
+            pyautogui.keyUp("delete")
+            
 
     def stop(self):
         pass
