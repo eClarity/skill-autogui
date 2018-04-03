@@ -1,0 +1,1 @@
+(runterscrollen|hochscrollen|linksscrollen|rechtsscrollen|scrollen schreiben) (?P<Scroll>.*) (clicks)

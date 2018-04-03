@@ -1,0 +1,1 @@
+(halt|loslassen|drücken) (?P<Key>.*[^\s])
