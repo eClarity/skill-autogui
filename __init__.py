@@ -91,36 +91,36 @@ class AutoguiSkill(MycroftSkill):
         self.register_intent(paste_intent, self.handle_paste_intent)
 
     def handle_type_intent(self, message):
-	self.speak_dialog("typing")
-	text = message.data.get('Text')
+        self.speak_dialog("typing")
+        text = message.data.get('Text')
         pyautogui.typewrite(text, interval=0.05)
 
     def handle_mouse_absolute_intent(self, message):
-	self.speak('moving mouse now')
-	#X = message.data.get('X')
-	#Y = message.data.get('Y')
+	    self.speak('moving mouse now')
+	    #X = message.data.get('X')
+	    #Y = message.data.get('Y')
         #pyautogui.moveTo(X, Y)
 
     def handle_mouse_scroll_down_intent(self, message):
         self.speak('scrolling down now')
         scroll = message.data.get('Scroll')
         scroll_down = int(scroll) * -1
-	pyautogui.scroll(scroll_down)
+        pyautogui.scroll(scroll_down)
 
     def handle_mouse_scroll_up_intent(self, message):
         self.speak('scrolling up now')
         scroll = message.data.get('Scroll')
         scroll_up = int(scroll)
-	pyautogui.scroll(scroll_up)
+        pyautogui.scroll(scroll_up)
 
     def handle_mouse_scroll_right_intent(self, message):
-        if platform.system().lower().startswith('lin'):
-            self.speak('scrolling right now')
-            scroll = message.data.get('Scroll')
-            scroll_right = int(scroll)
-	    pyautogui.hscroll(scroll_right)
-        else:
-            self.speak('Sorry, I cannot scroll right on your current operating system')
+        #if platform.system().lower().startswith('lin'):
+        self.speak('scrolling right now')
+        #    scroll = message.data.get('Scroll')
+        #    scroll_right = int(scroll)
+        #    pyautogui.hscroll(scroll_right)
+        #else:
+        #    self.speak('Sorry, I cannot scroll right on your current operating system')
 
     def handle_screen_res_intent(self, message):
         screen = pyautogui.size()
