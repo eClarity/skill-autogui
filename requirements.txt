@@ -1,3 +1,6 @@
 python-xlib
 pyautogui
 num2words
+mouseinfo
+python3-tkinter
+tk
